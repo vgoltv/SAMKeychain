@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #ifdef SAMKEYCHAIN_SYNCHRONIZATION_AVAILABLE
 typedef NS_ENUM(NSUInteger, SAMKeychainQuerySynchronizationMode) {
-	SAMKeychainQuerySynchronizationModeAny,
+	SAMKeychainQuerySynchronizationModeAny = 0,
 	SAMKeychainQuerySynchronizationModeNo,
 	SAMKeychainQuerySynchronizationModeYes
 };

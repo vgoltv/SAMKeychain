@@ -127,26 +127,28 @@ class KeychainTests: XCTestCase {
 	}
 
 	func testSynchronizable() {
-		let createQuery = SAMKeychainQuery()
-		createQuery.service = testService
-		createQuery.account = testAccount
-		createQuery.password = testPassword
-		createQuery.synchronizationMode = .yes
-		try! createQuery.save()
-
-		let noFetchQuery = SAMKeychainQuery()
-		noFetchQuery.service = testService
-		noFetchQuery.account = testAccount
-		noFetchQuery.synchronizationMode = .no
-		XCTAssertThrowsError(try noFetchQuery.fetch())
-		XCTAssertNotEqual(createQuery.password, noFetchQuery.password)
-
-		let anyFetchQuery = SAMKeychainQuery()
-		anyFetchQuery.service = testService
-		anyFetchQuery.account = testAccount
-		anyFetchQuery.synchronizationMode = .any
-		try! anyFetchQuery.fetch()
-		XCTAssertEqual(createQuery.password, anyFetchQuery.password)
+		if SAMKeychainQuery.isSynchronizationAvailable(){
+			let createQuery = SAMKeychainQuery()
+			createQuery.service = testService
+			createQuery.account = testAccount
+			createQuery.password = testPassword
+			createQuery.synchronizationMode = SAMKeychainQuerySynchronizationMode.yes
+			try! createQuery.save()
+			
+			let noFetchQuery = SAMKeychainQuery()
+			noFetchQuery.service = testService
+			noFetchQuery.account = testAccount
+			noFetchQuery.synchronizationMode = SAMKeychainQuerySynchronizationMode.no
+			XCTAssertThrowsError(try noFetchQuery.fetch())
+			XCTAssertNotEqual(createQuery.password, noFetchQuery.password)
+			
+			let anyFetchQuery = SAMKeychainQuery()
+			anyFetchQuery.service = testService
+			anyFetchQuery.account = testAccount
+			anyFetchQuery.synchronizationMode = SAMKeychainQuerySynchronizationMode.any
+			try! anyFetchQuery.fetch()
+			XCTAssertEqual(createQuery.password, anyFetchQuery.password)
+		}
 	}
 
 	func testConvenienceMethods() {
