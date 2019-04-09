@@ -40,6 +40,8 @@ SAMKeychain has the following class methods for working with the system keychain
 + (BOOL)deletePasswordForService:(NSString *)serviceName account:(NSString *)account;
 + (void)setAccessibilityType:(CFTypeRef)accessibilityType;
 + (BOOL)setPassword:(NSString *)password forService:(NSString *)serviceName account:(NSString *)account;
++ (BOOL)setPasswordData:(NSData *)password forService:(NSString *)serviceName account:(NSString *)account;
++ (BOOL)setPasswordDictionary:(NSDictionary *)password forService:(NSString *)serviceName account:(NSString *)account;
 ```
 
 Easy as that. (See [SAMKeychain.h](https://github.com/soffes/samkeychain/blob/master/Sources/SAMKeychain.h) and [SAMKeychainQuery.h](https://github.com/soffes/samkeychain/blob/master/Sources/SAMKeychainQuery.h) for all of the methods.)
