@@ -157,14 +157,43 @@
 
 #pragma mark - Accessors
 
-- (void)setPasswordObject:(id<NSCoding>)object {
-	self.passwordData = [NSKeyedArchiver archivedDataWithRootObject:object];
+- (void)setPasswordDictionary:(NSDictionary *)object {
+    
+    if( ![object isKindOfClass:[NSDictionary class]] &&
+       ![object isKindOfClass:[NSMutableDictionary class]] ){
+        NSLog(@"%@: passwordDictionary, wrong format of the given data", NSStringFromClass([self class]) );
+        return;
+    }
+    
+    NSError *error = nil;
+    self.passwordData = [NSJSONSerialization dataWithJSONObject:object
+                                                           options:NSJSONWritingPrettyPrinted
+                                                             error:&error];
+
+    if(error){
+        NSLog(@"%@: setPasswordDictionary error: %@", NSStringFromClass([self class]), error.localizedDescription);
+    }
 }
 
 
-- (id<NSCoding>)passwordObject {
+- (NSDictionary *)passwordDictionary {
 	if ([self.passwordData length]) {
-		return [NSKeyedUnarchiver unarchiveObjectWithData:self.passwordData];
+        NSError *error = nil;
+        
+        id obj = [NSJSONSerialization JSONObjectWithData:self.passwordData
+                                                                     options:NSJSONReadingAllowFragments
+                                                                       error:&error];
+        if(error){
+            NSLog(@"%@: passwordDictionary error: %@", NSStringFromClass([self class]), error.localizedDescription);
+            return nil;
+        }
+        
+        if( !obj || ![obj isKindOfClass:[NSDictionary class]]){
+            NSLog(@"%@: passwordDictionary, wrong format of the given data", NSStringFromClass([self class]) );
+            return nil;
+        }
+        
+        return (NSDictionary *)obj;
 	}
 	return nil;
 }
@@ -251,7 +280,8 @@
 	static dispatch_once_t onceToken;
 	static NSBundle *resourcesBundle = nil;
 	dispatch_once(&onceToken, ^{
-		NSURL *url = [[NSBundle bundleForClass:[SAMKeychainQuery class]] URLForResource:@"SAMKeychain" withExtension:@"bundle"];
+        NSBundle *bundle = [NSBundle bundleForClass:[SAMKeychainQuery class]];
+		NSURL *url = [bundle URLForResource:@"SAMKeychain" withExtension:@"bundle"];
 		resourcesBundle = [NSBundle bundleWithURL:url];
 	});
 	

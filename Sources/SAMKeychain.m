@@ -50,6 +50,19 @@ NSString *const kSAMKeychainWhereKey = @"svce";
     return query.passwordData;
 }
 
++ (nullable NSDictionary *)passwordDictionaryForService:(NSString *)serviceName account:(NSString *)account {
+    return [self passwordDictionaryForService:serviceName account:account error:nil];
+}
+
++ (nullable NSDictionary *)passwordDictionaryForService:(NSString *)serviceName account:(NSString *)account error:(NSError **)error {
+    SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];
+    query.service = serviceName;
+    query.account = account;
+    [query fetch:error];
+    
+    return query.passwordDictionary;
+}
+
 
 + (BOOL)deletePasswordForService:(NSString *)serviceName account:(NSString *)account {
 	return [self deletePasswordForService:serviceName account:account error:nil];
@@ -87,6 +100,18 @@ NSString *const kSAMKeychainWhereKey = @"svce";
     query.service = serviceName;
     query.account = account;
     query.passwordData = password;
+    return [query save:error];
+}
+
++ (BOOL)setPasswordDictionary:(NSDictionary *)password forService:(NSString *)serviceName account:(NSString *)account {
+    return [self setPasswordDictionary:password forService:serviceName account:account error:nil];
+}
+
++ (BOOL)setPasswordDictionary:(NSDictionary *)password forService:(NSString *)serviceName account:(NSString *)account error:(NSError **)error {
+    SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];
+    query.service = serviceName;
+    query.account = account;
+    query.passwordDictionary = password;
     return [query save:error];
 }
 
